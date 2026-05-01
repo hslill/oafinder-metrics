@@ -16,3 +16,11 @@
     "express": "^5.2.1"
   }
 }
+
+{
+  "scripts": {
+    "build:editor": "node scripts/build-editor.js",
+    "build:libguide": "node scripts/build-libguide.js",
+    "build": "npm run build:editor && npm run build:libguide"
+  }
+}
