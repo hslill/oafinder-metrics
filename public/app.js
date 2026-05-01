@@ -3261,4 +3261,18 @@ function sendFeedbackEvent(payload) {
   }
   */
 }
+// Secret staff hotkey: Ctrl+Shift+O opens OAFinder Data Editor in a new tab
+document.addEventListener("keydown", (event) => {
+  // Ignore if typing in an input/textarea/select to avoid surprises
+  const targetTag = (event.target && event.target.tagName) || "";
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(targetTag)) return;
 
+  // Ctrl+Shift+O (case-insensitive)
+  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "o") {
+    const link = document.getElementById("oafEditorLink");
+    if (link && link.href) {
+      window.open(link.href, "_blank", "noopener");
+      event.preventDefault();
+    }
+  }
+});
