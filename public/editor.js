@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------------- Metrics: load from Vercel (optional) ----------------
   if (metricsStatus && metricsContent && metricsTotalEvents && metricsTableBody) {
     const METRICS_ENDPOINT =
-      window.__OAFINDER_METRICS_ENDPOINT__ ||
-      "https://<your-vercel-project>.vercel.app/api/oafinder-metrics";
+  window.__OAFINDER_METRICS_ENDPOINT__ ||
+  "https://oafinder-metrics.vercel.app/api/oafinder-metrics";
 
     fetch(METRICS_ENDPOINT, { cache: "no-store" })
       .then((response) => {
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadData() {
     dataStatus.textContent = "Loading...";
     dataStatus.style.color = "#555";
-    fetch("/api/content", { cache: "no-cache" })
+    fetch("api/oafinder-content.js", { cache: "no-cache" })
       .then((r) => r.json())
       .then((json) => {
         data = json;
@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!data) return;
     dataStatus.textContent = "Saving...";
     dataStatus.style.color = "#555";
-    fetch("/api/content", {
+    fetch("api/oafinder-content.js", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
