@@ -2596,8 +2596,8 @@ function hydrateJournalCard(card, journal) {
         badges: [{ label: "Use NLM link to verify", tone: "warning" }],
         subjects: journal.subjectLabels,
       });
-*/
-    });
+
+    });*/
 }
 
 function fetchJournalCover(issn, originalTitle) {
@@ -2636,7 +2636,7 @@ function getNlmMetadata(journal) {
   return nlmLookupCache.get(cacheKey);
 }*/
 
-function fetchNlmMetadata(journal) {
+async function fetchNlmMetadata(journal) {
   const queryTerm =
     journal.issn_print || journal.issn_online
       ? `${journal.issn_print || journal.issn_online}[issn] AND ncbijournals`
