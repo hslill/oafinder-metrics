@@ -9,7 +9,7 @@ let currentBrowseList = [];
 let currentBrowseRendered = 0;
 const BROWSE_PAGE_SIZE = 50; // number of journals per "page"
 
-// Default feedback endpoint (for local/prototype server)
+// Feedback / metrics endpoint configuration
 const FEEDBACK_ENDPOINT =
   (typeof window !== "undefined" && window.__OAFINDER_FEEDBACK_ENDPOINT__) ||
   "/api/metrics/feedback";
