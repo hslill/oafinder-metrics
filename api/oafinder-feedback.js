@@ -1,9 +1,33 @@
 // api/oafinder-feedback.js
 import { appendEventToGitHub } from "../lib/githubMetrics.js";
 
+const ALLOWED_ORIGINS = [
+  "https://hslguides.med.nyu.edu", // LibGuides
+  // add others if needed, e.g. local dev:
+  // "http://localhost:5000"
+];
+
+function setCorsHeaders(req, res) {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
 export default async function handler(req, res) {
+  setCorsHeaders(req, res);
+
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "POST, OPTIONS");
     res.status(405).json({ error: "Method Not Allowed" });
     return;
   }
@@ -35,7 +59,7 @@ export default async function handler(req, res) {
     res.status(204).end();
   } catch (error) {
     console.error("Failed to append metrics to GitHub:", error);
-    // Still return 204 so the UI isn't affected; or use 500 if you prefer
+    // Still end with 204 to not break UI (or you can send 500)
     res.status(204).end();
   }
 }
