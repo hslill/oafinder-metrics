@@ -9,6 +9,11 @@ let currentBrowseList = [];
 let currentBrowseRendered = 0;
 const BROWSE_PAGE_SIZE = 50; // number of journals per "page"
 
+// Default feedback endpoint (for local/prototype server)
+const FEEDBACK_ENDPOINT =
+  (typeof window !== "undefined" && window.__OAFINDER_FEEDBACK_ENDPOINT__) ||
+  "/api/metrics/feedback";
+
 const placeholderThumbnail =
   "https://openlibrary.org/images/icons/avatar_book-sm.png";
 const currentDate = new Date();
@@ -3214,15 +3219,14 @@ function escapeAttribute(value) {
 }
 
 function sendFeedbackEvent(payload) {
-  // 1) Example: send to your own API endpoint
-  fetch("/api/metrics/feedback", {
+  fetch(FEEDBACK_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       ...payload,
       timestamp: new Date().toISOString(),
     }),
-    keepalive: true, // helps with unload
+    keepalive: true,
   }).catch(() => {
     // Swallow errors: analytics should never break the UI
   });
