@@ -5,15 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadJsonBtn = document.getElementById("downloadJsonBtn");
   const saveDataBtn = document.getElementById("saveDataBtn");
   const dataStatus = document.getElementById("dataStatus");
-
   const journalSearchInput = document.getElementById("journalSearchInput");
   const journalsTableContainer = document.getElementById("journalsTableContainer");
   const dealsTableContainer = document.getElementById("dealsTableContainer");
-
   const rawJsonEditor = document.getElementById("rawJsonEditor");
   const applyRawJsonBtn = document.getElementById("applyRawJsonBtn");
   const rawJsonStatus = document.getElementById("rawJsonStatus");
-
   const csvFileInput = document.getElementById("csvFileInput");
   const importCsvBtn = document.getElementById("importCsvBtn");
   const exportCsvBtn = document.getElementById("exportCsvBtn");
@@ -52,114 +49,108 @@ document.addEventListener("DOMContentLoaded", () => {
   const addDealBtn = document.getElementById("addDealBtn");
 
   const loadBackupBtn = document.getElementById("loadBackupBtn");
+
+  // Metrics elements (optional)
   const metricsStatus = document.getElementById("metricsStatus");
   const metricsContent = document.getElementById("metricsContent");
   const metricsTotalEvents = document.getElementById("metricsTotalEvents");
   const metricsTableBody = document.querySelector("#metricsTable tbody");
 
-  // ---------------- Helper functions for server interaction ----------------
-if (!metricsStatus || !metricsTotalEvents || !metricsTableBody) {
-    return;
+  // ---------------- Metrics: load from Vercel (optional) ----------------
+  if (metricsStatus && metricsContent && metricsTotalEvents && metricsTableBody) {
+    const METRICS_ENDPOINT =
+      window.__OAFINDER_METRICS_ENDPOINT__ ||
+      "https://<your-vercel-project>.vercel.app/api/oafinder-metrics";
+
+    fetch(METRICS_ENDPOINT, { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load metrics");
+        return response.json();
+      })
+      .then((metricsData) => {
+        metricsStatus.textContent = "Metrics loaded.";
+        metricsContent.style.display = "block";
+        metricsTotalEvents.textContent = metricsData.totalEvents || 0;
+
+        const modes = metricsData.modes || {};
+        metricsTableBody.innerHTML = "";
+
+        Object.keys(modes)
+          .sort()
+          .forEach((mode) => {
+            const row = document.createElement("tr");
+            const m = modes[mode];
+            row.innerHTML = `
+              <td>${mode}</td>
+              <td>${m.total}</td>
+              <td>${m.helpfulTrue}</td>
+              <td>${m.helpfulFalse}</td>
+              <td>${m.helpfulNull}</td>
+            `;
+            metricsTableBody.appendChild(row);
+          });
+      })
+      .catch((error) => {
+        console.error("Metrics error:", error);
+        metricsStatus.textContent =
+          "Unable to load metrics. Please try again later.";
+      });
   }
-
-  // Adjust this URL to your Vercel project
-  const METRICS_ENDPOINT =
-    window.__OAFINDER_METRICS_ENDPOINT__ ||
-    "https://<your-vercel-project>.vercel.app/api/oafinder-metrics";
-
-  fetch(METRICS_ENDPOINT, { cache: "no-store" })
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to load metrics");
-      return response.json();
-    })
-    .then((data) => {
-      metricsStatus.textContent = "Metrics loaded.";
-      metricsContent.style.display = "block";
-
-      metricsTotalEvents.textContent = data.totalEvents || 0;
-
-      const modes = data.modes || {};
-      metricsTableBody.innerHTML = "";
-
-      Object.keys(modes)
-        .sort()
-        .forEach((mode) => {
-          const row = document.createElement("tr");
-          const m = modes[mode];
-
-          row.innerHTML = `
-            <td>${mode}</td>
-            <td>${m.total}</td>
-            <td>${m.helpfulTrue}</td>
-            <td>${m.helpfulFalse}</td>
-            <td>${m.helpfulNull}</td>
-          `;
-          metricsTableBody.appendChild(row);
-        });
-    })
-    .catch((error) => {
-      console.error("Metrics error:", error);
-      metricsStatus.textContent =
-        "Unable to load metrics. Please try again later.";
-    });
-});
 
   // ---------------- Helper functions ----------------
 
-loadBackupBtn.addEventListener("click", async () => {
-  dataStatus.textContent = "Loading backup list...";
-  dataStatus.style.color = "#555";
-
-  try {
-    const files = await fetch("/api/backups").then(r => r.json());
-    if (!files.length) {
-      dataStatus.textContent = "No backups found on server.";
-      dataStatus.style.color = "orange";
-      return;
-    }
-
-    const choice = window.prompt(
-      "Available backups:\n" +
-      files.map((f, i) => `${i + 1}. ${f}`).join("\n") +
-      "\n\nEnter the number of the backup to load:"
-    );
-    if (!choice) return;
-    const index = Number(choice) - 1;
-    if (!Number.isInteger(index) || index < 0 || index >= files.length) {
-      dataStatus.textContent = "Invalid selection.";
+  // Load backup list and choose one to load
+  loadBackupBtn.addEventListener("click", async () => {
+    dataStatus.textContent = "Loading backup list...";
+    dataStatus.style.color = "#555";
+    try {
+      const files = await fetch("/api/backups").then((r) => r.json());
+      if (!files.length) {
+        dataStatus.textContent = "No backups found on server.";
+        dataStatus.style.color = "orange";
+        return;
+      }
+      const choice = window.prompt(
+        "Available backups:\n" +
+          files.map((f, i) => `${i + 1}. ${f}`).join("\n") +
+          "\n\nEnter the number of the backup to load:"
+      );
+      if (!choice) return;
+      const index = Number(choice) - 1;
+      if (!Number.isInteger(index) || index < 0 || index >= files.length) {
+        dataStatus.textContent = "Invalid selection.";
+        dataStatus.style.color = "red";
+        return;
+      }
+      const name = files[index];
+      dataStatus.textContent = `Loading backup ${name}...`;
+      const backupData = await fetch(
+        `/api/backups/${encodeURIComponent(name)}`
+      ).then((r) => r.json());
+      data = backupData;
+      dataStatus.textContent = `Loaded backup: ${name} (not yet saved as live content.json).`;
+      dataStatus.style.color = "green";
+      refreshViews();
+    } catch (e) {
+      console.error(e);
+      dataStatus.textContent = "Error loading backup.";
       dataStatus.style.color = "red";
-      return;
     }
-
-    const name = files[index];
-    dataStatus.textContent = `Loading backup ${name}...`;
-    const backupData = await fetch(`/api/backups/${encodeURIComponent(name)}`).then(r => r.json());
-
-    data = backupData;
-    dataStatus.textContent = `Loaded backup: ${name} (not yet saved as live content.json).`;
-    dataStatus.style.color = "green";
-    refreshViews();
-  } catch (e) {
-    console.error(e);
-    dataStatus.textContent = "Error loading backup.";
-    dataStatus.style.color = "red";
-  }
-});
+  });
 
   // ===== Load / refresh =====
   function loadData() {
     dataStatus.textContent = "Loading...";
     dataStatus.style.color = "#555";
-
     fetch("/api/content", { cache: "no-cache" })
-      .then(r => r.json())
-      .then(json => {
+      .then((r) => r.json())
+      .then((json) => {
         data = json;
         dataStatus.textContent = "Loaded.";
         dataStatus.style.color = "green";
         refreshViews();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         dataStatus.textContent = "Error loading /api/content";
         dataStatus.style.color = "red";
@@ -170,7 +161,6 @@ loadBackupBtn.addEventListener("click", async () => {
     if (!data) return;
     renderJournalsTable();
     renderDealsTable();
-
     if (rawJsonEditor) {
       rawJsonEditor.value = JSON.stringify(data, null, 2);
     }
@@ -184,11 +174,16 @@ loadBackupBtn.addEventListener("click", async () => {
     const journals = data.journals_index;
     const filter = (journalSearchInput.value || "").toLowerCase();
 
-    const filtered = journals.filter(j => {
+    const filtered = journals.filter((j) => {
       const title = (j.TITLE || j.journal_title || "").toLowerCase();
       const pub = (j["Journal Publisher"] || j.publisher || "").toLowerCase();
-      const issn = ((j.ISSN || j.issn_print || "") + (j.eISSN || j.issn_online || "")).toLowerCase();
-      return !filter || title.includes(filter) || pub.includes(filter) || issn.includes(filter);
+      const issn = (
+        (j.ISSN || j.issn_print || "") +
+        (j.eISSN || j.issn_online || "")
+      ).toLowerCase();
+      return (
+        !filter || title.includes(filter) || pub.includes(filter) || issn.includes(filter)
+      );
     });
 
     let html = `<table class="editor-table journals-table">
@@ -203,7 +198,7 @@ loadBackupBtn.addEventListener("click", async () => {
     </tr>
   </thead><tbody>`;
 
-    filtered.forEach(j => {
+    filtered.forEach((j) => {
       const originalIndex = journals.indexOf(j);
       html += `
         <tr data-index="${originalIndex}">
@@ -222,29 +217,37 @@ loadBackupBtn.addEventListener("click", async () => {
     html += `</tbody></table>`;
     journalsTableContainer.innerHTML = html;
 
-    journalsTableContainer.querySelectorAll("button[data-action]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const tr = btn.closest("tr");
-        const idx = Number(tr.dataset.index);
-        const action = btn.dataset.action;
-        const journal = data.journals_index[idx];
-
-        if (action === "delete") {
-          if (confirm(`Delete journal "${journal.TITLE || journal.journal_title}"?`)) {
-            data.journals_index.splice(idx, 1);
-            refreshViews();
+    journalsTableContainer
+      .querySelectorAll("button[data-action]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tr = btn.closest("tr");
+          const idx = Number(tr.dataset.index);
+          const action = btn.dataset.action;
+          const journal = data.journals_index[idx];
+          if (action === "delete") {
+            if (
+              confirm(
+                `Delete journal "${journal.TITLE || journal.journal_title}"?`
+              )
+            ) {
+              data.journals_index.splice(idx, 1);
+              refreshViews();
+            }
+          } else if (action === "edit") {
+            startEditJournal(journal, idx);
           }
-        } else if (action === "edit") {
-          startEditJournal(journal, idx);
-        }
+        });
       });
-    });
   }
 
   // ===== Journal details panel (Add + Edit) =====
   function showJournalDetailsPanel() {
     journalDetailsPanel.style.display = "block";
-    journalDetailsPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    journalDetailsPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }
 
   function hideJournalDetailsPanel() {
@@ -256,32 +259,32 @@ loadBackupBtn.addEventListener("click", async () => {
 
   function startEditJournal(journal, index) {
     journalDetailsIndexInput.value = String(index);
-    journalDetailsTitleInput.value = journal.TITLE || journal.journal_title || "";
-    journalDetailsPublisherInput.value = journal["Journal Publisher"] || journal.publisher || "";
+    journalDetailsTitleInput.value =
+      journal.TITLE || journal.journal_title || "";
+    journalDetailsPublisherInput.value =
+      journal["Journal Publisher"] || journal.publisher || "";
     journalDetailsISSNInput.value = journal.ISSN || journal.issn_print || "";
     journalDetailsEISSNInput.value = journal.eISSN || journal.issn_online || "";
     journalDetailsDealIdInput.value = journal.deal_id || "";
-    journalDetailsTermsInput.value = journal.Terms || journal.cost_to_author || "";
+    journalDetailsTermsInput.value =
+      journal.Terms || journal.cost_to_author || "";
     journalDetailsStatus.textContent = "";
     showJournalDetailsPanel();
   }
 
-  journalDetailsForm.addEventListener("submit", e => {
+  journalDetailsForm.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!data) return;
     data.journals_index = data.journals_index || [];
-
     const idxStr = journalDetailsIndexInput.value;
     const isNew = idxStr === "";
     const idx = isNew ? data.journals_index.length : Number(idxStr);
-
     const title = journalDetailsTitleInput.value.trim();
     if (!title) {
       journalDetailsStatus.textContent = "Title is required.";
       journalDetailsStatus.style.color = "red";
       return;
     }
-
     const publisher = journalDetailsPublisherInput.value.trim();
     const issn = journalDetailsISSNInput.value.trim();
     const eissn = journalDetailsEISSNInput.value.trim();
@@ -289,7 +292,6 @@ loadBackupBtn.addEventListener("click", async () => {
     const terms = journalDetailsTermsInput.value.trim();
 
     const j = data.journals_index[idx] || {};
-
     j.TITLE = title;
     delete j.journal_title;
     j["Journal Publisher"] = publisher;
@@ -309,7 +311,6 @@ loadBackupBtn.addEventListener("click", async () => {
       ? "Journal added (not yet saved to server)."
       : "Journal updated (not yet saved to server).";
     journalDetailsStatus.style.color = "green";
-
     renderJournalsTable();
   });
 
@@ -357,23 +358,24 @@ loadBackupBtn.addEventListener("click", async () => {
     html += `</tbody></table>`;
     dealsTableContainer.innerHTML = html;
 
-    dealsTableContainer.querySelectorAll("button[data-action]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const tr = btn.closest("tr");
-        const idx = Number(tr.dataset.index);
-        const action = btn.dataset.action;
-        const deal = data.publishing_deals[idx];
-
-        if (action === "delete") {
-          if (confirm(`Delete deal "${deal.deal_id}" (${deal.publisher})?`)) {
-            data.publishing_deals.splice(idx, 1);
-            refreshViews();
+    dealsTableContainer
+      .querySelectorAll("button[data-action]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tr = btn.closest("tr");
+          const idx = Number(tr.dataset.index);
+          const action = btn.dataset.action;
+          const deal = data.publishing_deals[idx];
+          if (action === "delete") {
+            if (confirm(`Delete deal "${deal.deal_id}" (${deal.publisher})?`)) {
+              data.publishing_deals.splice(idx, 1);
+              refreshViews();
+            }
+          } else if (action === "edit") {
+            startEditDeal(deal, idx);
           }
-        } else if (action === "edit") {
-          startEditDeal(deal, idx);
-        }
+        });
       });
-    });
   }
 
   // ===== Deal details panel (Add + Edit) =====
@@ -405,11 +407,10 @@ loadBackupBtn.addEventListener("click", async () => {
     showDealDetailsPanel();
   }
 
-  dealDetailsForm.addEventListener("submit", e => {
+  dealDetailsForm.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!data) return;
     data.publishing_deals = data.publishing_deals || [];
-
     const idxStr = dealDetailsIndexInput.value;
     const isNew = idxStr === "";
     const idx = isNew ? data.publishing_deals.length : Number(idxStr);
@@ -423,7 +424,6 @@ loadBackupBtn.addEventListener("click", async () => {
     }
 
     const d = data.publishing_deals[idx] || {};
-
     d.deal_id = dealId;
     d.publisher = publisher;
     d.type = dealDetailsTypeInput.value.trim();
@@ -442,7 +442,6 @@ loadBackupBtn.addEventListener("click", async () => {
       ? "Deal added (not yet saved to server)."
       : "Deal updated (not yet saved to server).";
     dealDetailsStatus.style.color = "green";
-
     renderDealsTable();
   });
 
@@ -460,14 +459,13 @@ loadBackupBtn.addEventListener("click", async () => {
     if (!data) return;
     dataStatus.textContent = "Saving...";
     dataStatus.style.color = "#555";
-
     fetch("/api/content", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(r => r.json())
-      .then(resp => {
+      .then((r) => r.json())
+      .then((resp) => {
         if (resp.status === "ok") {
           dataStatus.textContent = `Saved. Backup: ${resp.backupFile || "none"}`;
           dataStatus.style.color = "green";
@@ -476,14 +474,14 @@ loadBackupBtn.addEventListener("click", async () => {
           dataStatus.style.color = "red";
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         dataStatus.textContent = "Network/server error while saving.";
         dataStatus.style.color = "red";
       });
   }
 
-  // ===== Raw JSON / CSV (optional, keep your implementations) =====
+  // ===== Raw JSON / CSV =====
   if (applyRawJsonBtn && rawJsonEditor) {
     applyRawJsonBtn.addEventListener("click", () => {
       try {
@@ -510,11 +508,17 @@ loadBackupBtn.addEventListener("click", async () => {
         const text = await csvFileInput.files[0].text();
         const parsed = parseCSV(text);
         const { headers, rows } = parsed;
-        if (!headers.includes("TITLE") || !headers.includes("Journal Publisher") || !headers.includes("Terms")) {
-          throw new Error("Missing required columns: TITLE, Journal Publisher, Terms.");
+        if (
+          !headers.includes("TITLE") ||
+          !headers.includes("Journal Publisher") ||
+          !headers.includes("Terms")
+        ) {
+          throw new Error(
+            "Missing required columns: TITLE, Journal Publisher, Terms."
+          );
         }
         data.journals_index = data.journals_index || [];
-        rows.forEach(r => data.journals_index.push(r));
+        rows.forEach((r) => data.journals_index.push(r));
         csvStatus.textContent = `Imported ${rows.length} rows.`;
         csvStatus.style.color = "green";
         refreshViews();
@@ -528,18 +532,29 @@ loadBackupBtn.addEventListener("click", async () => {
   if (exportCsvBtn) {
     exportCsvBtn.addEventListener("click", () => {
       if (!data || !data.journals_index) return;
-      const headers = ["TITLE","Journal Publisher","Terms","ISSN","eISSN","deal_id"];
+      const headers = [
+        "TITLE",
+        "Journal Publisher",
+        "Terms",
+        "ISSN",
+        "eISSN",
+        "deal_id",
+      ];
       const lines = [headers.join(",")];
-      data.journals_index.forEach(j => {
+      data.journals_index.forEach((j) => {
         const row = [
           j.TITLE || j.journal_title || "",
           j["Journal Publisher"] || j.publisher || "",
           j.Terms || j.cost_to_author || "",
           j.ISSN || j.issn_print || "",
           j.eISSN || j.issn_online || "",
-          j.deal_id || ""
+          j.deal_id || "",
         ];
-        lines.push(row.map(v => `"${(v || "").replace(/"/g,'""')}"`).join(","));
+        lines.push(
+          row
+            .map((v) => `"${(v || "").replace(/"/g, '""')}"`)
+            .join(",")
+        );
       });
       const blob = new Blob([lines.join("\n")], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
@@ -589,35 +604,3 @@ loadBackupBtn.addEventListener("click", async () => {
   // Initial load
   loadData();
 });
-
-const saveDataBtn = document.getElementById("saveDataBtn");
-const saveStatus = document.getElementById("saveStatus");
-
-function saveToServer() {
-  if (!data) return;
-  saveStatus.textContent = "Saving...";
-  saveStatus.style.color = "#555";
-
-  fetch("/api/content", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-    .then(r => r.json())
-    .then(resp => {
-      if (resp.status === "ok") {
-        saveStatus.textContent = `Saved. Backup: ${resp.backupFile || "none"}`;
-        saveStatus.style.color = "green";
-      } else {
-        saveStatus.textContent = `Save error: ${resp.message || "unknown"}`;
-        saveStatus.style.color = "red";
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      saveStatus.textContent = "Network/server error while saving.";
-      saveStatus.style.color = "red";
-    });
-}
-
-saveDataBtn.addEventListener("click", saveToServer);
