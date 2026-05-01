@@ -2582,7 +2582,7 @@ function hydrateJournalCard(card, journal) {
     });
     return;
   }
-
+/*   
   getNlmMetadata(journal)
     .then((metadata) => {
       if (!nlmPanel.isConnected) return;
@@ -2596,6 +2596,7 @@ function hydrateJournalCard(card, journal) {
         badges: [{ label: "Use NLM link to verify", tone: "warning" }],
         subjects: journal.subjectLabels,
       });
+*/
     });
 }
 
@@ -2625,7 +2626,7 @@ function fetchJournalCover(issn, originalTitle) {
       journalTitle: originalTitle,
     }));
 }
-
+/*
 function getNlmMetadata(journal) {
   const cacheKey =
     journal.issn_print || journal.issn_online || journal.journal_name;
@@ -2633,7 +2634,7 @@ function getNlmMetadata(journal) {
     nlmLookupCache.set(cacheKey, fetchNlmMetadata(journal));
   }
   return nlmLookupCache.get(cacheKey);
-}
+}*/
 
 function fetchNlmMetadata(journal) {
   const queryTerm =
@@ -3230,6 +3231,7 @@ function sendFeedbackEvent(payload) {
   }).catch(() => {
     // Swallow errors: analytics should never break the UI
   });
+
 
   // 2) OPTIONAL: Google Analytics / Matomo integration
   // Uncomment and adjust based on your analytics setup.
