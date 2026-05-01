@@ -8,6 +8,43 @@
 </head>
 <body class="editor-body">
 <div class="oaf-app">
+  <!-- Auth overlay -->
+  <div id="editorAuthOverlay" style="
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.9);
+      color: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    ">
+    <div style="
+        background: #0f172a;
+        border-radius: 12px;
+        padding: 24px 28px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+        max-width: 360px;
+        width: 100%;
+      ">
+      <h1 style="margin:0 0 12px 0; font-size:1.3rem;">OAFinder Data Editor</h1>
+      <p style="margin:0 0 16px 0; font-size:0.9rem; color:#cbd5f5;">
+        Staff access only. Enter the editor password to continue.
+      </p>
+      <input type="password"
+             id="editorAuthPassword"
+             placeholder="Editor password"
+             style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #4b5563; margin-bottom:10px; font-size:0.9rem;" />
+      <button id="editorAuthSubmit"
+              class="search-btn"
+              type="button"
+              style="width:100%; justify-content:center;">
+        Unlock editor
+      </button>
+      <p id="editorAuthStatus"
+         style="margin-top:8px; font-size:0.8rem; color:#f97373;"></p>
+    </div>
+  </div>
   <!-- Shared HEADER -->
   <header id="header">
     <div class="container py-3 px-4">
@@ -201,6 +238,6 @@
 <button id="saveDataBtn">Save changes to server</button>
 <span id="saveStatus" style="margin-left:8px; font-size:0.85rem;"></span>
 
-<script src="editor.js"></script>
+<script src="editor-built.js"></script>
 </body>
 </html>

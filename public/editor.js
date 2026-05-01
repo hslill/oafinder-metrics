@@ -1,5 +1,46 @@
 let data = null;
 
+// Simple editor password (client-side).
+// NOTE: This is not secure against a motivated attacker; it is a staff gate.
+const EDITOR_PASSWORD = "__EDITOR_PASSWORD__PLACEHOLDER__";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("editorAuthOverlay");
+  const passwordInput = document.getElementById("editorAuthPassword");
+  const submitBtn = document.getElementById("editorAuthSubmit");
+  const status = document.getElementById("editorAuthStatus");
+
+  // If the auth elements exist, wire up the overlay behavior
+  if (overlay && passwordInput && submitBtn) {
+    function unlockEditor() {
+      const value = passwordInput.value || "";
+      if (value === EDITOR_PASSWORD) {
+        // Remember for this browser session
+        sessionStorage.setItem("oafEditorUnlocked", "1");
+        overlay.style.display = "none";
+      } else {
+        status.textContent = "Incorrect password. Please try again.";
+      }
+    }
+
+    // If already unlocked in this session, hide overlay immediately
+    if (sessionStorage.getItem("oafEditorUnlocked") === "1") {
+      overlay.style.display = "none";
+    } else {
+      overlay.style.display = "flex";
+    }
+
+    submitBtn.addEventListener("click", unlockEditor);
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        unlockEditor();
+      }
+    });
+  }
+
+  // ----- existing editor.js DOMContentLoaded code goes here -----
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const reloadBtn = document.getElementById("reloadDataBtn");
   const downloadJsonBtn = document.getElementById("downloadJsonBtn");
