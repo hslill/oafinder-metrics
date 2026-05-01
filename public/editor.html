@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OAFinder Data Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="editor-body">
+<div class="oaf-app">
+  <!-- Shared HEADER -->
+  <header id="header">
+    <div class="container py-3 px-4">
+      <div class="header-bar">
+        <div class="header-left">
+          <img class="library_logo"
+               src="https://d2jv02qf7xgjwx.cloudfront.net/accounts/129950/images/NYUL-Health_logo_Purple_RGB_300ppi.png"
+               alt="Library Logo" />
+        </div>
+        <div class="header-center">
+          <div class="app-title">
+            OAFinder
+          </div>
+          <div class="app-subtitle">
+            Data Management &amp; Editor
+          </div>
+        </div>
+        <a class="header-feedback" href="/" title="Back to OAFinder">
+          Back to Finder
+        </a>
+      </div>
+    </div>
+  </header>
+
+<body>
+<h1>OAFinder Data Editor</h1>
+<p>This interface allows staff to edit <code>content.json</code>. Changes should be saved on the server.</p>
+
+<!-- Data File panel -->
+<section class="editor-panel">
+  <h2>Data File</h2>
+  <div class="editor-button-row" style="margin-bottom:8px;">
+    <button id="reloadDataBtn" class="search-btn" type="button">Reload Content</button>
+    <button id="loadBackupBtn" class="search-btn clear-btn" type="button">
+  Load Backed-up Content
+</button>
+    <button id="downloadJsonBtn" class="search-btn clear-btn" type="button">Download Content (JSON)</button>
+    <span id="dataStatus" class="editor-status"></span>
+  </div>
+</section>
+
+<section class="editor-panel" id="metricsPanel">
+  <h2>OAFinder Feedback & Usage Metrics</h2>
+  <p class="editor-status" id="metricsStatus">Loading metrics...</p>
+  <div id="metricsContent" style="display:none;">
+    <p><strong>Total feedback events:</strong> <span id="metricsTotalEvents">0</span></p>
+    <table class="editor-table" id="metricsTable">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th>Total</th>
+          <th>👍 Helpful</th>
+          <th>👎 Not helpful</th>
+          <th>Other/Unknown</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  </section>
+
+
+<!-- Journals listing -->
+<section class="editor-panel">
+  <h2>Journals</h2>
+  <p style="font-size:0.85rem;">Search and edit journal records.</p>
+  <input type="search"
+         id="journalSearchInput"
+         placeholder="Filter by title, ISSN, or publisher..." />
+  <div id="journalsTableContainer"
+       style="max-height:300px; overflow:auto; margin-top:8px;"></div>
+</section>
+
+<!-- Journal Details form (Add + Edit) -->
+<section class="editor-panel" id="journalDetailsPanel" style="display:none;">
+  <div class="editor-button-row" style="justify-content: space-between; margin-bottom:8px;">
+    <h2 style="margin:0;">Journal Details</h2>
+    <button id="addJournalBtn" class="search-btn" type="button">
+      + Add New Journal
+    </button>
+  </div>
+  <p style="font-size:0.85rem; color:#666;">
+    Select a journal from the table above to edit, or click <strong>Add New Journal</strong> to create a new entry.
+  </p>
+  <form id="journalDetailsForm">
+    <input type="hidden" id="journalDetailsIndex" value="" />
+
+    <label for="journalDetailsTitle">Title</label>
+    <input type="text" id="journalDetailsTitle" required />
+
+    <label for="journalDetailsPublisher">Publisher</label>
+    <input type="text" id="journalDetailsPublisher" />
+
+    <label for="journalDetailsISSN">ISSN</label>
+    <input type="text" id="journalDetailsISSN" placeholder="0000-0000" />
+
+    <label for="journalDetailsEISSN">eISSN</label>
+    <input type="text" id="journalDetailsEISSN" placeholder="0000-0000" />
+
+    <label for="journalDetailsDealId">Deal ID</label>
+    <input type="text" id="journalDetailsDealId" />
+
+    <label for="journalDetailsTerms">Terms / Cost to Author</label>
+    <input type="text" id="journalDetailsTerms" />
+
+    <div class="editor-button-row" style="margin-top:8px;">
+      <button type="submit" class="search-btn">Save Journal</button>
+      <button type="button" id="cancelJournalDetailsBtn" class="search-btn clear-btn">Cancel</button>
+      <span id="journalDetailsStatus" class="editor-status"></span>
+    </div>
+  </form>
+</section>
+
+<!-- Deals listing -->
+<section class="editor-panel">
+  <h2>Deals</h2>
+  <p style="font-size:0.85rem;">Edit publisher deals.</p>
+  <div id="dealsTableContainer"
+       style="max-height:300px; overflow:auto; margin-top:8px;"></div>
+</section>
+
+<!-- Deal Details form (Add + Edit) -->
+<section class="editor-panel" id="dealDetailsPanel" style="display:none;">
+  <div class="editor-button-row" style="justify-content: space-between; margin-bottom:8px;">
+    <h2 style="margin:0;">Deal Details</h2>
+    <button id="addDealBtn" class="search-btn" type="button">
+      + Add New Deal
+    </button>
+  </div>
+  <p style="font-size:0.85rem; color:#666;">
+    Select a deal from the table above to edit, or click <strong>Add New Deal</strong> to create a new entry.
+  </p>
+  <form id="dealDetailsForm">
+    <input type="hidden" id="dealDetailsIndex" value="" />
+
+    <label for="dealDetailsId">Deal ID</label>
+    <input type="text" id="dealDetailsId" required />
+
+    <label for="dealDetailsPublisher">Publisher</label>
+    <input type="text" id="dealDetailsPublisher" required />
+
+    <label for="dealDetailsType">Type</label>
+    <input type="text" id="dealDetailsType" placeholder="Journal Articles, Books, Both, etc." />
+
+    <label for="dealDetailsCoverage">Coverage</label>
+    <input type="text" id="dealDetailsCoverage" placeholder="e.g., 100%, partial" />
+
+    <label for="dealDetailsRenewal">Renewal date</label>
+    <input type="text" id="dealDetailsRenewal" placeholder="YYYY-MM-DD" />
+
+    <label for="dealDetailsCost">Cost to Author</label>
+    <input type="text" id="dealDetailsCost" placeholder="e.g., No cost, Discounted" />
+
+    <label for="dealDetailsEligible">Eligible Authors</label>
+    <input type="text" id="dealDetailsEligible" />
+
+    <label for="dealDetailsScope">Journal Scope</label>
+    <input type="text" id="dealDetailsScope" />
+
+    <label for="dealDetailsModel">Model (optional)</label>
+    <input type="text" id="dealDetailsModel" placeholder="Subscribe to Open, Transformative, etc." />
+
+    <label for="dealDetailsDetails">Details</label>
+    <textarea id="dealDetailsDetails" rows="4"></textarea>
+
+    <div class="editor-button-row" style="margin-top:8px;">
+      <button type="submit" class="search-btn">Save Deal</button>
+      <button type="button" id="cancelDealDetailsBtn" class="search-btn clear-btn">Cancel</button>
+      <span id="dealDetailsStatus" class="editor-status"></span>
+    </div>
+  </form>
+</section>
+<div class="panel">
+  <h2>CSV Import/Export (Journals)</h2>
+  <p style="font-size:0.85rem;">
+    Expected columns: <code>TITLE, Journal Publisher, Terms, ISSN, eISSN, deal_id (optional)</code>.
+  </p>
+  <input type="file" id="csvFileInput" accept=".csv" />
+  <button id="importCsvBtn">Import CSV</button>
+  <button id="exportCsvBtn">Export Journals as CSV</button>
+  <div id="csvStatus" style="margin-top:6px; font-size:0.85rem;"></div>
+</div>
+
+<div class="panel">
+  <h2>Raw JSON Editor (advanced)</h2>
+  <p style="font-size:0.8rem;">For emergency fixes. Ensure valid JSON before saving to server.</p>
+  <textarea id="rawJsonEditor" rows="12" style="font-family:monospace;"></textarea><br>
+  <button id="applyRawJsonBtn">Apply raw JSON changes</button>
+  <span id="rawJsonStatus" style="margin-left:8px; font-size:0.85rem;"></span>
+</div>
+<button id="saveDataBtn">Save changes to server</button>
+<span id="saveStatus" style="margin-left:8px; font-size:0.85rem;"></span>
+
+<script src="editor.js"></script>
+</body>
+</html>
