@@ -1,0 +1,193 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open Access Journal Lookup</title>
+<link rel="stylesheet" href="styles.css" />
+
+<div class="oaf-app">
+<header id="header">
+  <div class="container py-3 px-4">
+    <div class="header-bar">
+      <div class="header-left">
+        <img class="library_logo" src="https://d2jv02qf7xgjwx.cloudfront.net/accounts/129950/images/NYUL-Health_logo_Purple_RGB_300ppi.png" alt="Library Logo" />
+      </div>
+      <div class="header-center">
+        <div class="app-title">
+          OAFinder
+        </div>
+      </div>
+      <a class="header-feedback" href="https://libraryhelp.med.nyu.edu/" target="_blank" rel="noopener noreferrer">
+        Send Feedback
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="container px-4">
+    <div class="pt-5">
+      <div class="main-panel">
+        <h1 class="title_text">
+          Open Access publishing support for NYU Langone Health authors
+        </h1>
+        <p class="lede">
+          Search by journal, publisher, subject area, or question to find NYU-supported open access options.
+        </p>
+        <p class="last-updated" id="lastUpdated"></p>
+      </div>
+
+      <div class="search-card">
+        <div class="search-card-header">
+          <div class="search-card-title">Find a journal</div>
+          <div class="search-card-subtitle">Try a journal title, publisher, ISSN, or a question like "Does NYU cover BMJ Case Reports?"</div>
+        </div>
+        <form id="searchForm">
+          <div class="search-row">
+            <input class="search-input"
+                   type="search"
+                   placeholder="Enter a journal, publisher, or question..."
+                   autofocus
+                   id="keyword"
+                   name="keyword"
+                   value="" />
+            <button class="search-btn" type="submit" title="Search" aria-label="Search">
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.75 4.75a1 1 0 0 0 1.42-1.42l-4.75-4.75A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/>
+              </svg>
+            </button>
+            <button class="search-btn clear-btn" type="button" id="clearBtn" aria-label="Clear search" title="Clear search and filters">
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 0 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4Z"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="search-tools">
+          <div class="filter-grid">
+            <label class="filter-field" for="subjectFilter">
+              <span>Subject</span>
+              <select id="subjectFilter">
+                <option value="">All subjects</option>
+              </select>
+            </label>
+            <label class="filter-field" for="supportFilter">
+              <span>Support need</span>
+              <select id="supportFilter">
+                <option value="">All support types</option>
+              </select>
+            </label>
+            <label class="filter-field" for="benefitFilter">
+              <span>Benefit type</span>
+              <select id="benefitFilter">
+                <option value="">Any benefit</option>
+                <option value="full">No-cost coverage</option>
+                <option value="discount">Discount or partial coverage</option>
+                <option value="fellowship">Fellowship or membership code</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="topic-strip" style="display: none;">
+            <div class="topic-strip-label">Common questions</div>
+            <div id="topicChips" class="topic-chips"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-container">
+        <div id="browsePanel" class="title-index-panel">
+          <h2>Browse</h2>
+          <p>Browse journals, publishers, subjects, support topics, or deal summaries.</p>
+          <div class="accordion" id="browseAccordion">
+            <div class="accordion-item">
+              <button class="accordion-header" data-target="journalsAccordionBody">
+                Journals A-Z
+                <span class="accordion-icon">+</span>
+              </button>
+              <div id="journalsAccordionBody" class="accordion-body">
+                <div id="titleIndexContainer" class="title-index-container"></div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" data-target="publishersAccordionBody">
+                Publishers
+                <span class="accordion-icon">+</span>
+              </button>
+              <div id="publishersAccordionBody" class="accordion-body">
+                <div id="publisherIndexContainer" class="title-index-container"></div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" data-target="subjectsAccordionBody">
+                Subjects
+                <span class="accordion-icon">+</span>
+              </button>
+              <div id="subjectsAccordionBody" class="accordion-body">
+                <div id="subjectIndexContainer" class="title-index-container"></div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" data-target="supportAccordionBody">
+                Support Topics
+                <span class="accordion-icon">+</span>
+              </button>
+              <div id="supportAccordionBody" class="accordion-body">
+                <div id="supportTopicContainer" class="title-index-container"></div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" data-target="dealsAccordionBody">
+                Deal Summary
+                <span class="accordion-icon">+</span>
+              </button>
+              <div id="dealsAccordionBody" class="accordion-body">
+                <div id="dealSummaryContainer" class="title-index-container"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultsArea" class="results-panel results-flex" style="display:none;">
+          <div class="results-header">
+  <div class="results-header-main">
+    <h2 class="results-title" id="resultsTitle">Search Results</h2>
+    <span class="results-mode-pill" id="resultsModePill"></span>
+  </div>
+  <span class="results-count-badge" id="resultsCountBadge">0 results</span>
+  <span class="accordion-badge"></span>
+</div>
+          <div class="results-summary" id="resultsSummary"></div>
+          <!-- feedback prompt hook -->
+<div id="feedbackPromptContainer"></div>
+          <div class="results-box" id="resultsPlaceholder">
+            <p class="text-muted mb-0">
+              Enter a journal or publication title, publisher, subject, or question to begin.
+            </p>
+          </div>
+          <div id="resultsList" class="row g-3" style="display:none;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="container px-4 py-4 footer-area">
+  <div class="info-box">
+    <p class="mb-0">
+      The library negotiates agreements with journal publishers to help reduce or eliminate open access publishing fees. Journals not listed in this database may not be covered by our institutional publishing agreements.
+      If you're unsure, please refer to our
+      <a href="https://hslguides.med.nyu.edu/collectiondevelopment/apcs" target="_blank" rel="noopener">Open Access Deals page</a>
+      or <a href="https://libraryhelp.med.nyu.edu/">contact the library</a> for assistance.
+    </p>
+  </div>
+  <p class="footer-disclaimer">
+    &copy; This tool is provided for informational purposes only and may not reflect the most current agreements. For official information, please contact the library.
+  </p>
+  <p class="footer-disclaimer-small">
+  Portions of this tool were adapted from <a href="https://jolt.cdlib.org/" target="_blank">work by the Open Access Data Analyst and California Digital Library</a> teams. We gratefully acknowledge their contributions.
+</p>
+</footer>
+</div>
+
+<script src="app.js"></script>
