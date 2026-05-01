@@ -139,23 +139,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===== Load / refresh =====
-  function loadData() {
-    dataStatus.textContent = "Loading...";
-    dataStatus.style.color = "#555";
-    fetch("api/oafinder-content.js", { cache: "no-cache" })
-      .then((r) => r.json())
-      .then((json) => {
-        data = json;
-        dataStatus.textContent = "Loaded.";
-        dataStatus.style.color = "green";
-        refreshViews();
-      })
-      .catch((err) => {
-        console.error(err);
-        dataStatus.textContent = "Error loading /api/content";
-        dataStatus.style.color = "red";
-      });
-  }
+// ===== Load / refresh =====
+function loadData() {
+  dataStatus.textContent = "Loading...";
+  dataStatus.style.color = "#555";
+
+  // Adjust this to your actual raw GitHub URL
+  const CONTENT_URL =
+    window.__OAFINDER_CONTENT_URL__ ||
+    "https://raw.githubusercontent.com/hslill/oafinder-metrics/refs/heads/main/public/content.json";
+
+  fetch(CONTENT_URL, { cache: "no-cache" })
+    .then((r) => {
+      if (!r.ok) {
+        throw new Error(`Failed to load content.json: ${r.status}`);
+      }
+      return r.json();
+    })
+    .then((json) => {
+      data = json;
+      dataStatus.textContent = "Loaded.";
+      dataStatus.style.color = "green";
+      refreshViews();
+    })
+    .catch((err) => {
+      console.error(err);
+      dataStatus.textContent = "Error loading content.json from GitHub";
+      dataStatus.style.color = "red";
+    });
+}
 
   function refreshViews() {
     if (!data) return;
