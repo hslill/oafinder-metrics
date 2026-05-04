@@ -60,3 +60,4 @@
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"ACS Nano","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:23.003Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:39.812Z"}
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"Aboriginal Relationships between Culture and Plant Life in the Upper Great Lakes Region","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:56.521Z"}
+{"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:10:23.988Z"}
