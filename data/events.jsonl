@@ -43,3 +43,4 @@
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"ACS Food Science & Technology","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:14.874Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"AAPPS Bulletin","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:20.654Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"AAPPS Bulletin","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:22.445Z"}
+{"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:25.878Z"}
