@@ -2,8 +2,8 @@
 import { appendEventToGitHub } from "../lib/githubMetrics.js";
 
 const ALLOWED_ORIGINS = [
-  "https://hslguides.med.nyu.edu", // LibGuides
-  // add others if needed, e.g. local dev:
+  "https://hslguides.med.nyu.edu",
+  // add other origins if needed, e.g. your own test host:
   // "http://localhost:5000"
 ];
 
@@ -20,7 +20,6 @@ function setCorsHeaders(req, res) {
 export default async function handler(req, res) {
   setCorsHeaders(req, res);
 
-  // Handle preflight
   if (req.method === "OPTIONS") {
     res.status(204).end();
     return;
@@ -40,26 +39,28 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!event.mode) {
-    res.status(400).json({ error: "Missing mode" });
-    return;
-  }
+  // Normalize event shape
+  const eventType = event.eventType || "feedback";
 
   const normalizedEvent = {
-    mode: event.mode,
-    helpful: typeof event.helpful === "boolean" ? event.helpful : null,
-    eventType: event.eventType || "feedback",
+    eventType,
+    mode: event.mode || "unknown",
+    helpful:
+      typeof event.helpful === "boolean" ? event.helpful : null,
     stateSnapshot: event.stateSnapshot || {},
-    timestamp: event.timestamp || new Date().toISOString(),
+    journalTitle: event.journalTitle || "",
+    userRole: event.userRole || "",
+    userDepartment: event.userDepartment || "",
+    timestamp: event.timestamp || new Date().toISOString()
   };
 
   try {
     await appendEventToGitHub(normalizedEvent);
-    console.log("OAFinder feedback event appended.");
+    console.log("OAFinder metrics event appended.");
     res.status(204).end();
   } catch (error) {
     console.error("Failed to append metrics to GitHub:", error);
-    // Still end with 204 to not break UI (or you can send 500)
+    // Still return 204 so UI is not blocked; you could change to 500 if desired
     res.status(204).end();
   }
 }
