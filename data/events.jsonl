@@ -17,3 +17,4 @@
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:54:13.809Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:55:09.560Z"}
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"ACS Food Science & Technology","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:55:29.455Z"}
+{"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"PLOS Aging and Health","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:55:55.896Z"}
