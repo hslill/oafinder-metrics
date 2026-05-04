@@ -33,6 +33,10 @@ export default async function handler(req, res) {
   try {
     const events = await readAllEvents();
 
+    // Current time and 30-day window
+    const now = new Date();
+    const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
     const summary = {
       totalEvents: events.length,
       modes: {},
@@ -44,7 +48,18 @@ export default async function handler(req, res) {
       },
       topJournals: [],
       userRoles: {},
-      userDepartments: {}
+      userDepartments: {},
+      lastEventTimestamp: null, // NEW
+      last30Days: {
+        from: new Date(now.getTime() - THIRTY_DAYS_MS).toISOString(),
+        to: now.toISOString(),
+        totalEvents: 0,
+        usage: {
+          totalAccesses: 0,
+          totalQueries: 0
+        }
+        // You can add per-mode, etc. for last 30 days later if needed
+      }
     };
 
     // Temporary maps for topJournals aggregation
@@ -61,11 +76,38 @@ export default async function handler(req, res) {
       const userRole = (ev.userRole || "Unknown").trim();
       const userDept = (ev.userDepartment || "Unknown").trim();
 
-      // === Usage: accesses & queries ===
+      // Parse timestamp to track last event
+      const ts = ev.timestamp ? new Date(ev.timestamp) : null;
+      if (ts && !Number.isNaN(ts.getTime())) {
+        if (!summary.lastEventTimestamp) {
+          summary.lastEventTimestamp = ts.toISOString();
+        } else {
+          const currentLast = new Date(summary.lastEventTimestamp);
+          if (ts > currentLast) {
+            summary.lastEventTimestamp = ts.toISOString();
+          }
+        }
+      }
+
+      // Determine if this event is within the last 30 days
+      const inLast30Days = ts
+        ? now.getTime() - ts.getTime() <= THIRTY_DAYS_MS
+        : false;
+      if (inLast30Days) {
+        summary.last30Days.totalEvents += 1;
+      }
+
+      // === Usage: accesses & queries (all-time) ===
       if (type === "access") {
         summary.usage.totalAccesses += 1;
+        if (inLast30Days) {
+          summary.last30Days.usage.totalAccesses += 1;
+        }
       } else if (type === "query") {
         summary.usage.totalQueries += 1;
+        if (inLast30Days) {
+          summary.last30Days.usage.totalQueries += 1;
+        }
 
         // Track top journals when journalTitle is present
         if (journalTitle) {
@@ -76,7 +118,7 @@ export default async function handler(req, res) {
         }
       }
 
-      // === Feedback by mode (existing logic) ===
+      // === Feedback by mode (all-time, as before) ===
       const modeGroup =
         summary.modes[mode] ||
         (summary.modes[mode] = {
@@ -91,7 +133,7 @@ export default async function handler(req, res) {
       else if (helpful === false) modeGroup.helpfulFalse += 1;
       else modeGroup.helpfulNull += 1;
 
-      // === Support types summary ===
+      // === Support types summary (all-time) ===
       const stGroup =
         summary.supportTypes[supportType] ||
         (summary.supportTypes[supportType] = {
@@ -106,7 +148,7 @@ export default async function handler(req, res) {
       else if (helpful === false) stGroup.helpfulFalse += 1;
       else stGroup.helpfulNull += 1;
 
-      // === Subjects summary ===
+      // === Subjects summary (all-time) ===
       const subjGroup =
         summary.subjects[subjectId] ||
         (summary.subjects[subjectId] = {
