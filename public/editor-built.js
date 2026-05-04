@@ -95,13 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const metricsStatus = document.getElementById("metricsStatus");
   const metricsContent = document.getElementById("metricsContent");
   const metricsTotalEvents = document.getElementById("metricsTotalEvents");
+  const metricsTotalAccesses = document.getElementById("metricsTotalAccesses");
+  const metricsTotalQueries = document.getElementById("metricsTotalQueries");
+  const metricsLastEvent = document.getElementById("metricsLastEvent");
+  const metricsLast30TotalEvents = document.getElementById("metricsLast30TotalEvents");
+  const metricsLast30Accesses = document.getElementById("metricsLast30Accesses");
+  const metricsLast30Queries = document.getElementById("metricsLast30Queries");
   const metricsTableBody = document.querySelector("#metricsTable tbody");
+  const metricsTopJournalsTableBody = document.querySelector("#metricsTopJournalsTable tbody");
+  const metricsRolesTableBody = document.querySelector("#metricsRolesTable tbody");
+  const metricsDepartmentsTableBody = document.querySelector("#metricsDepartmentsTable tbody");
 
-  // ---------------- Metrics: load from Vercel (optional) ----------------
-  if (metricsStatus && metricsContent && metricsTotalEvents && metricsTableBody) {
+  if (
+    metricsStatus &&
+    metricsContent &&
+    metricsTotalEvents &&
+    metricsTableBody
+  ) {
     const METRICS_ENDPOINT =
-  window.__OAFINDER_METRICS_ENDPOINT__ ||
-  "https://oafinder-metrics.vercel.app/api/oafinder-metrics";
+      window.__OAFINDER_METRICS_ENDPOINT__ ||
+      "https://oafinder-metrics.vercel.app/api/oafinder-metrics";
 
     fetch(METRICS_ENDPOINT, { cache: "no-store" })
       .then((response) => {
@@ -111,16 +124,58 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((metricsData) => {
         metricsStatus.textContent = "Metrics loaded.";
         metricsContent.style.display = "block";
+
         metricsTotalEvents.textContent = metricsData.totalEvents || 0;
+
+        if (metricsTotalAccesses) {
+          metricsTotalAccesses.textContent =
+            (metricsData.usage && metricsData.usage.totalAccesses) || 0;
+        }
+
+        if (metricsTotalQueries) {
+          metricsTotalQueries.textContent =
+            (metricsData.usage && metricsData.usage.totalQueries) || 0;
+        }
+
+        if (metricsLastEvent) {
+          if (metricsData.lastEventTimestamp) {
+            const d = new Date(metricsData.lastEventTimestamp);
+            metricsLastEvent.textContent = d.toLocaleString();
+          } else {
+            metricsLastEvent.textContent = "No events recorded yet.";
+          }
+        }
+
+        if (metricsLast30TotalEvents && metricsData.last30Days) {
+          metricsLast30TotalEvents.textContent =
+            metricsData.last30Days.totalEvents || 0;
+        }
+
+        if (
+          metricsLast30Accesses &&
+          metricsData.last30Days &&
+          metricsData.last30Days.usage
+        ) {
+          metricsLast30Accesses.textContent =
+            metricsData.last30Days.usage.totalAccesses || 0;
+        }
+
+        if (
+          metricsLast30Queries &&
+          metricsData.last30Days &&
+          metricsData.last30Days.usage
+        ) {
+          metricsLast30Queries.textContent =
+            metricsData.last30Days.usage.totalQueries || 0;
+        }
 
         const modes = metricsData.modes || {};
         metricsTableBody.innerHTML = "";
-
         Object.keys(modes)
           .sort()
           .forEach((mode) => {
-            const row = document.createElement("tr");
             const m = modes[mode];
+            const row = document.createElement("tr");
             row.innerHTML = `
               <td>${mode}</td>
               <td>${m.total}</td>
@@ -130,6 +185,76 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             metricsTableBody.appendChild(row);
           });
+
+        if (metricsTopJournalsTableBody) {
+          metricsTopJournalsTableBody.innerHTML = "";
+
+          const topJournals = metricsData.topJournals || [];
+
+          if (!topJournals.length) {
+            const row = document.createElement("tr");
+            row.innerHTML =
+              '<td colspan="2" style="color:#6b7280;">No journal search data recorded yet.</td>';
+            metricsTopJournalsTableBody.appendChild(row);
+          } else {
+            topJournals
+              .sort((a, b) => (b.count || 0) - (a.count || 0))
+              .forEach((item) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${item.title || "(Unknown journal)"}</td>
+                  <td>${item.count || 0}</td>
+                `;
+                metricsTopJournalsTableBody.appendChild(row);
+              });
+          }
+        }
+
+        if (metricsRolesTableBody) {
+          metricsRolesTableBody.innerHTML = "";
+          const userRoles = metricsData.userRoles || {};
+          const roleEntries = Object.entries(userRoles).sort((a, b) => b[1] - a[1]);
+
+          if (!roleEntries.length) {
+            const row = document.createElement("tr");
+            row.innerHTML =
+              '<td colspan="2" style="color:#6b7280;">No role data recorded yet.</td>';
+            metricsRolesTableBody.appendChild(row);
+          } else {
+            roleEntries.forEach(([role, count]) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${role || "(Unknown role)"}</td>
+                <td>${count || 0}</td>
+              `;
+              metricsRolesTableBody.appendChild(row);
+            });
+          }
+        }
+
+        if (metricsDepartmentsTableBody) {
+          metricsDepartmentsTableBody.innerHTML = "";
+          const userDepartments = metricsData.userDepartments || {};
+          const departmentEntries = Object.entries(userDepartments).sort(
+            (a, b) => b[1] - a[1]
+          );
+
+          if (!departmentEntries.length) {
+            const row = document.createElement("tr");
+            row.innerHTML =
+              '<td colspan="2" style="color:#6b7280;">No department data recorded yet.</td>';
+            metricsDepartmentsTableBody.appendChild(row);
+          } else {
+            departmentEntries.forEach(([department, count]) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${department || "(Unknown department)"}</td>
+                <td>${count || 0}</td>
+              `;
+              metricsDepartmentsTableBody.appendChild(row);
+            });
+          }
+        }
       })
       .catch((error) => {
         console.error("Metrics error:", error);
