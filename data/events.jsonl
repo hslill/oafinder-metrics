@@ -2,3 +2,4 @@
 {"mode":"support","helpful":true,"eventType":"feedback","stateSnapshot":{"hasQuery":true,"queryLength":110,"subjectId":"general-medicine","supportType":"fellowship","benefitType":"fellowship"},"timestamp":"2026-05-01T19:57:04.344Z"}
 {"mode":"support","helpful":true,"eventType":"feedback","stateSnapshot":{"hasQuery":true,"queryLength":110,"subjectId":"general-medicine","supportType":"fellowship","benefitType":"fellowship"},"timestamp":"2026-05-01T20:06:24.333Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:23:47.208Z"}
+{"eventType":"feedback","mode":"browse","helpful":true,"stateSnapshot":{"hasQuery":false,"queryLength":0,"subjectId":"dermatology","supportType":"","benefitType":""},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:24:13.956Z"}
