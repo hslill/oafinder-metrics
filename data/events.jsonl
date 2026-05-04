@@ -55,3 +55,4 @@
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:02.237Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"ACS Catalysis","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:15.387Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"ACS Engineering Au","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:16.875Z"}
+{"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"ACS Electrochemistry","userRole":"","userDepartment":"","timestamp":"2026-05-04T18:00:18.819Z"}
