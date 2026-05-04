@@ -9,3 +9,4 @@
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"ACS Environmental Au","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:35:41.988Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:36:07.576Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:43:53.069Z"}
+{"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"ACS Food Science & Technology","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:44:06.595Z"}
