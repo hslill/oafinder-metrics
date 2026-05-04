@@ -11,3 +11,4 @@
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:43:53.069Z"}
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"ACS Food Science & Technology","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:44:06.595Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"4D printing","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:44:15.381Z"}
+{"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"ACM Transactions on Spatial Algorithms and Systems","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:44:16.535Z"}
