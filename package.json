@@ -6,15 +6,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "build:editor": "node scripts/build-editor.js",
-    "build:libguide": "node scripts/build-libguide.js",
-    "build": "npm run build:editor && npm run build:libguide"
-  },
-  "dependencies": {
-    "cookie-parser": "^1.4.7",
-    "express": "^5.2.1"
-  }
+ "scripts": {
+  "start": "node server.js",
+  "build": "echo \"No build step\""
+}
 }
