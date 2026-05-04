@@ -2,7 +2,7 @@ let data = null;
 
 // Simple editor password (client-side).
 // NOTE: This is not secure against a motivated attacker; it is a staff gate.
-const EDITOR_PASSWORD = ";";
+const EDITOR_PASSWORD = "$tud3nt;";
 
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("editorAuthOverlay");
