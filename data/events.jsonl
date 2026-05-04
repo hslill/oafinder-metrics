@@ -4,3 +4,4 @@
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:23:47.208Z"}
 {"eventType":"feedback","mode":"browse","helpful":true,"stateSnapshot":{"hasQuery":false,"queryLength":0,"subjectId":"dermatology","supportType":"","benefitType":""},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:24:13.956Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:35:17.049Z"}
+{"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"3D Printing in Medicine","userRole":"","userDepartment":"","timestamp":"2026-05-04T16:35:30.893Z"}
