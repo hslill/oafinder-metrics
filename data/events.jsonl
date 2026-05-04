@@ -47,3 +47,4 @@
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"4D printing","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:46:29.224Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"AAPS Open","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:46:30.736Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:46:33.034Z"}
+{"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"anesthesiology","supportType":"","benefitType":""},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:47:00.697Z"}
