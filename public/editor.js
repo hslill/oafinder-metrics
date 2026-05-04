@@ -161,26 +161,6 @@ if (
           metricsData.last30Days.usage.totalQueries || 0;
       }
 
-      // Feedback by mode (existing logic)
-      const modes = metricsData.modes || {};
-      metricsTableBody.innerHTML = "";
-      Object.keys(modes)
-        .sort()
-        .forEach((mode) => {
-          const m = modes[mode];
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${mode}</td>
-            <td>${m.total}</td>
-            <td>${m.helpfulTrue}</td>
-            <td>${m.helpfulFalse}</td>
-            <td>${m.helpfulNull}</td>
-          `;
-          metricsTableBody.appendChild(row);
-        });
-
-      // Top journals, roles, departments...
-      // (Leave as in your previous extended code)
     })
     .catch((error) => {
       console.error("Metrics error:", error);
