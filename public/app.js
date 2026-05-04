@@ -651,6 +651,19 @@ document.addEventListener("DOMContentLoaded", () => {
     resultsModePill: document.getElementById("resultsModePill"),
     feedbackPromptContainer: document.getElementById("feedbackPromptContainer"),
   };
+  document.addEventListener("DOMContentLoaded", () => {
+  // ... existing code ...
+
+  // Log a tool access event (once per page load)
+  sendFeedbackEvent({
+    eventType: "access",
+    mode: "global",
+    helpful: null,
+    stateSnapshot: {},
+    // Optionally, attach role/department if you later have a way to capture them:
+    // userRole: getUserRoleFromSomewhere(),
+    // userDepartment: getUserDeptFromSomewhere()
+  });
 
   populateSelect(elements.subjectFilter, SUBJECT_DEFINITIONS, "All subjects");
   populateSelect(elements.supportFilter, SUPPORT_NEEDS, "All support types");
@@ -1576,6 +1589,24 @@ function runSearch(state, elements) {
     clearSearch(elements);
     return;
   }
+
+  if (state.query) {
+  sendFeedbackEvent({
+    eventType: "query",
+    mode: "search",
+    helpful: null,
+    stateSnapshot: {
+      subjectId: state.subjectId || "",
+      supportType: state.supportType || "",
+      benefitType: state.benefitType || ""
+    },
+    // If you want to track top journals by name when you have exact matches:
+    journalTitle: journalMatches.length ? journalMatches[0].journal_name : ""
+    // Optional user metadata:
+    // userRole: ...,
+    // userDepartment: ...
+  });
+}
 
   elements.resultsArea.style.display = "block";
   elements.resultsArea.scrollTop = 0;
