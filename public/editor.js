@@ -189,6 +189,49 @@ if (
     });
 }
 
+// Feedback by mode (existing logic)
+const modes = metricsData.modes || {};
+metricsTableBody.innerHTML = "";
+Object.keys(modes)
+  .sort()
+  .forEach((mode) => {
+    const m = modes[mode];
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${mode}</td>
+      <td>${m.total}</td>
+      <td>${m.helpfulTrue}</td>
+      <td>${m.helpfulFalse}</td>
+      <td>${m.helpfulNull}</td>
+    `;
+    metricsTableBody.appendChild(row);
+  });
+
+// Frequently searched journals ---
+if (metricsTopJournalsTableBody) {
+  metricsTopJournalsTableBody.innerHTML = "";
+
+  const topJournals = metricsData.topJournals || [];
+
+  if (!topJournals.length) {
+    const row = document.createElement("tr");
+    row.innerHTML =
+      `<td colspan="2" style="color:#6b7280;">No journal search data recorded yet.</td>`;
+    metricsTopJournalsTableBody.appendChild(row);
+  } else {
+    topJournals
+      .sort((a, b) => (b.count || 0) - (a.count || 0))
+      .forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.title || "(Unknown journal)"}</td>
+          <td>${item.count || 0}</td>
+        `;
+        metricsTopJournalsTableBody.appendChild(row);
+      });
+  }
+}
+
   // ---------------- Helper functions ----------------
 
   // Load backup list and choose one to load
