@@ -92,11 +92,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadBackupBtn = document.getElementById("loadBackupBtn");
 
   // Metrics elements (optional)
-  const metricsStatus = document.getElementById("metricsStatus");
+const metricsStatus = document.getElementById("metricsStatus");
 const metricsContent = document.getElementById("metricsContent");
 const metricsTotalEvents = document.getElementById("metricsTotalEvents");
 const metricsTotalAccesses = document.getElementById("metricsTotalAccesses");
 const metricsTotalQueries = document.getElementById("metricsTotalQueries");
+const metricsLastEvent = document.getElementById("metricsLastEvent");           // NEW
+const metricsLast30TotalEvents = document.getElementById("metricsLast30TotalEvents"); // NEW
+const metricsLast30Accesses = document.getElementById("metricsLast30Accesses");       // NEW
+const metricsLast30Queries = document.getElementById("metricsLast30Queries");         // NEW
+
 const metricsTableBody = document.querySelector("#metricsTable tbody");
 const metricsTopJournalsTableBody = document.querySelector("#metricsTopJournalsTable tbody");
 const metricsRolesTableBody = document.querySelector("#metricsRolesTable tbody");
@@ -132,7 +137,31 @@ if (
           (metricsData.usage && metricsData.usage.totalQueries) || 0;
       }
 
-      // Feedback by mode
+      // Last event timestamp
+      if (metricsLastEvent) {
+        if (metricsData.lastEventTimestamp) {
+          const d = new Date(metricsData.lastEventTimestamp);
+          metricsLastEvent.textContent = d.toLocaleString();
+        } else {
+          metricsLastEvent.textContent = "No events recorded yet.";
+        }
+      }
+
+      // Last 30 days usage
+      if (metricsLast30TotalEvents && metricsData.last30Days) {
+        metricsLast30TotalEvents.textContent =
+          metricsData.last30Days.totalEvents || 0;
+      }
+      if (metricsLast30Accesses && metricsData.last30Days && metricsData.last30Days.usage) {
+        metricsLast30Accesses.textContent =
+          metricsData.last30Days.usage.totalAccesses || 0;
+      }
+      if (metricsLast30Queries && metricsData.last30Days && metricsData.last30Days.usage) {
+        metricsLast30Queries.textContent =
+          metricsData.last30Days.usage.totalQueries || 0;
+      }
+
+      // Feedback by mode (existing logic)
       const modes = metricsData.modes || {};
       metricsTableBody.innerHTML = "";
       Object.keys(modes)
@@ -150,66 +179,8 @@ if (
           metricsTableBody.appendChild(row);
         });
 
-      // Top journals
-      if (metricsTopJournalsTableBody) {
-        const topJournals = metricsData.topJournals || [];
-        metricsTopJournalsTableBody.innerHTML = "";
-        topJournals.forEach((entry) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${entry.title || "(untitled journal)"}</td>
-            <td>${entry.count || 0}</td>
-          `;
-          metricsTopJournalsTableBody.appendChild(row);
-        });
-        if (!topJournals.length) {
-          const row = document.createElement("tr");
-          row.innerHTML = `<td colspan="2">No journal frequency data recorded yet.</td>`;
-          metricsTopJournalsTableBody.appendChild(row);
-        }
-      }
-
-      // Roles
-      if (metricsRolesTableBody && metricsData.userRoles) {
-        metricsRolesTableBody.innerHTML = "";
-        const entries = Object.entries(metricsData.userRoles);
-        entries
-          .sort((a, b) => b[1] - a[1]) // sort by count desc
-          .forEach(([role, count]) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${role}</td>
-              <td>${count}</td>
-            `;
-            metricsRolesTableBody.appendChild(row);
-          });
-        if (!entries.length) {
-          const row = document.createElement("tr");
-          row.innerHTML = `<td colspan="2">No role data collected.</td>`;
-          metricsRolesTableBody.appendChild(row);
-        }
-      }
-
-      // Departments
-      if (metricsDepartmentsTableBody && metricsData.userDepartments) {
-        metricsDepartmentsTableBody.innerHTML = "";
-        const entries = Object.entries(metricsData.userDepartments);
-        entries
-          .sort((a, b) => b[1] - a[1])
-          .forEach(([dept, count]) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${dept}</td>
-              <td>${count}</td>
-            `;
-            metricsDepartmentsTableBody.appendChild(row);
-          });
-        if (!entries.length) {
-          const row = document.createElement("tr");
-          row.innerHTML = `<td colspan="2">No department data collected.</td>`;
-          metricsDepartmentsTableBody.appendChild(row);
-        }
-      }
+      // Top journals, roles, departments...
+      // (Leave as in your previous extended code)
     })
     .catch((error) => {
       console.error("Metrics error:", error);
