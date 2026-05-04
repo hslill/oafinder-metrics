@@ -651,15 +651,13 @@ document.addEventListener("DOMContentLoaded", () => {
     resultsModePill: document.getElementById("resultsModePill"),
     feedbackPromptContainer: document.getElementById("feedbackPromptContainer"),
   };
-  document.addEventListener("DOMContentLoaded", () => {
-  // ... existing code ...
 
-  // Log a tool access event (once per page load)
+  // NEW: log a tool access event (once per page load)
   sendFeedbackEvent({
     eventType: "access",
     mode: "global",
     helpful: null,
-    stateSnapshot: {},
+    stateSnapshot: {}
     // Optionally, attach role/department if you later have a way to capture them:
     // userRole: getUserRoleFromSomewhere(),
     // userDepartment: getUserDeptFromSomewhere()
@@ -690,7 +688,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       buildPublisherIndex(elements.publisherIndexContainer, (publisherName) => {
-        // Clear search input and filters when browsing by publisher to avoid confusion, since publisher deals can cover multiple journals and subjects
+        // Clear search input and filters when browsing by publisher to avoid confusion,
+        // since publisher deals can cover multiple journals and subjects
         setControlsFromState(
           { query: "", subjectId: "", supportType: "", benefitType: "" },
           elements,
@@ -699,26 +698,26 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Subjects browse → filter + search
-      buildSubjectIndex(elements.subjectIndexContainer, subjectId => {
-  const nextState = buildState(
-    {
-      query: "",
-      subjectId,
-      supportType: "",
-      benefitType: "",
-      publisherName: ""
-    },
-    elements
-  );
-  setControlsFromState(nextState, elements);
-  runSearch(nextState, elements);
-});
+      buildSubjectIndex(elements.subjectIndexContainer, (subjectId) => {
+        const nextState = buildState(
+          {
+            query: "",
+            subjectId,
+            supportType: "",
+            benefitType: "",
+            publisherName: ""
+          },
+          elements
+        );
+        setControlsFromState(nextState, elements);
+        runSearch(nextState, elements);
+      });
 
       buildSupportTopicIndex(elements.supportTopicContainer, applySupportTopic);
 
-      buildDealSummary(elements.dealSummaryContainer, deal => {
-  showSingleDeal(deal, elements);
-});
+      buildDealSummary(elements.dealSummaryContainer, (deal) => {
+        showSingleDeal(deal, elements);
+      });
 
       initAccordionBehavior();
     })
@@ -1654,7 +1653,20 @@ function runSearch(state, elements) {
   )
     ? "publication"
     : "journal";
-
+if (state.query) {
+  const primaryJournalTitle = journalMatches.length ? journalMatches[0].journal_name : "";
+  sendFeedbackEvent({
+    eventType: "query",
+    mode: "search",
+    helpful: null,
+    stateSnapshot: {
+      subjectId: state.subjectId || "",
+      supportType: state.supportType || "",
+      benefitType: state.benefitType || ""
+    },
+    journalTitle: primaryJournalTitle
+  });
+}
   const parts = [];
   if (state.query) {
     parts.push(`Searching for "${escapeHtml(state.query)}".`);
@@ -1824,7 +1836,18 @@ function showJournalDetails(journal, elements) {
     !elements.resultsSummary
   )
     return;
-
+// Log a journal selection event
+  sendFeedbackEvent({
+    eventType: "journal_selection",
+    mode: "browse",
+    helpful: null,
+    stateSnapshot: {
+      subjectIds: journal.subjectIds || [],
+      benefitType: journal.benefitType || ""
+    },
+    journalTitle: journal.journal_name || "",
+    // Optional: userRole / userDepartment if you add those later
+  });
   elements.resultsArea.style.display = "block";
   elements.resultsArea.scrollTop = 0;
   window.scrollTo({
