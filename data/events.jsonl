@@ -30,3 +30,4 @@
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"Aboriginal Relationships between Culture and Plant Life in the Upper Great Lakes Region","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:06:44.877Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"4D printing","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:06:57.290Z"}
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"AAPPS Bulletin","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:07:02.957Z"}
+{"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:22:47.346Z"}
