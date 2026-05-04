@@ -1589,24 +1589,6 @@ function runSearch(state, elements) {
     return;
   }
 
-  if (state.query) {
-  sendFeedbackEvent({
-    eventType: "query",
-    mode: "search",
-    helpful: null,
-    stateSnapshot: {
-      subjectId: state.subjectId || "",
-      supportType: state.supportType || "",
-      benefitType: state.benefitType || ""
-    },
-    // If you want to track top journals by name when you have exact matches:
-    journalTitle: journalMatches.length ? journalMatches[0].journal_name : ""
-    // Optional user metadata:
-    // userRole: ...,
-    // userDepartment: ...
-  });
-}
-
   elements.resultsArea.style.display = "block";
   elements.resultsArea.scrollTop = 0;
   window.scrollTo({
@@ -1639,7 +1621,6 @@ function runSearch(state, elements) {
     !state.supportType &&
     !state.benefitType &&
     !state.publisherName;
-
   if (isSubjectOnly) {
     runSubjectBrowse(state, elements);
     return;
@@ -1647,26 +1628,31 @@ function runSearch(state, elements) {
 
   // 4) Normal publication search path (journals/monographs only)
   const journalMatches = findJournalMatches(state, analysis);
-
   const resultLabel = journalMatches.some(
     (journal) => journal.recordType !== "journal"
   )
     ? "publication"
     : "journal";
-if (state.query) {
-  const primaryJournalTitle = journalMatches.length ? journalMatches[0].journal_name : "";
-  sendFeedbackEvent({
-    eventType: "query",
-    mode: "search",
-    helpful: null,
-    stateSnapshot: {
-      subjectId: state.subjectId || "",
-      supportType: state.supportType || "",
-      benefitType: state.benefitType || ""
-    },
-    journalTitle: primaryJournalTitle
-  });
-}
+
+  // NEW: log query events (only when there is a query)
+  if (state.query) {
+    const primaryJournalTitle =
+      journalMatches.length ? journalMatches[0].journal_name : "";
+
+    sendFeedbackEvent({
+      eventType: "query",
+      mode: "search",
+      helpful: null,
+      stateSnapshot: {
+        subjectId: state.subjectId || "",
+        supportType: state.supportType || "",
+        benefitType: state.benefitType || ""
+      },
+      journalTitle: primaryJournalTitle
+      // Optional: userRole / userDepartment if you later collect them
+    });
+  }
+
   const parts = [];
   if (state.query) {
     parts.push(`Searching for "${escapeHtml(state.query)}".`);
@@ -1685,6 +1671,7 @@ if (state.query) {
   } else {
     parts.push("No matching publications found in this tool.");
   }
+
   elements.resultsSummary.innerHTML = parts
     .map((p) => `<p>${p}</p>`)
     .join("");
@@ -1713,64 +1700,19 @@ if (state.query) {
     totalCards !== 1 ? "s" : ""
   }`;
 
-/*
-  // Only render publication matches if no supportType is active
-  if (!state.supportType && journalMatches.length) {
-    totalCards += journalMatches.length;
-    elements.resultsList.appendChild(renderSectionHeader("Matching publications"));
-    journalMatches.forEach((journal) => {
-      const card = renderJournalCard(journal);
-      elements.resultsList.appendChild(card);
-      hydrateJournalCard(card, journal);
-    });
-  } */
-
-  if (dealMatches.length) {
-    totalCards += dealMatches.length;
-    elements.resultsList.appendChild(
-      renderSectionHeader("Relevant publisher deals")
-    );
-    dealMatches.forEach((deal) => {
-      elements.resultsList.appendChild(renderDealCard(deal));
-    });
-  }
-
-  if (recommendations.length) {
-    totalCards += recommendations.length;
-    elements.resultsList.appendChild(
-      renderSectionHeader("Covered alternatives")
-    );
-    recommendations.forEach((journal) => {
-      const card = renderJournalCard(journal, true);
-      elements.resultsList.appendChild(card);
-      hydrateJournalCard(card, journal);
-    });
-  }
-
-  if (!totalCards) {
-    elements.resultsList.style.display = "none";
-    elements.resultsPlaceholder.style.display = "block";
-    elements.resultsPlaceholder.innerHTML = renderEmptyState(
-      state,
-      uncoveredPublishers
-    );
-  } else {
-    elements.resultsList.style.display = "block";
-  }
-
   // Badge + mode for normal search
   setResultsMode(elements, {
     title: "Search Results",
     modeLabel: state.subjectId ? "Search with filters" : "Search",
     badgeText: `${totalCards} result${totalCards !== 1 ? "s" : ""}`,
-    modeClass: "mode-search",
+    modeClass: "mode-search"
   });
 
-  // NEW: feedback prompt for search mode
+  // Feedback prompt for search mode
   renderFeedbackPrompt(elements, {
     mode: "search",
     hasResults: totalCards > 0,
-    state,
+    state
   });
 }
 
