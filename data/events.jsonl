@@ -48,3 +48,4 @@
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"discount"},"journalTitle":"AAPS Open","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:46:30.736Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:46:33.034Z"}
 {"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"anesthesiology","supportType":"","benefitType":""},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:47:00.697Z"}
+{"eventType":"feedback","mode":"browse","helpful":true,"stateSnapshot":{"hasQuery":false,"queryLength":0,"subjectId":"cardiology","supportType":"","benefitType":""},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:47:24.906Z"}
