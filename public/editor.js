@@ -93,50 +93,130 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Metrics elements (optional)
   const metricsStatus = document.getElementById("metricsStatus");
-  const metricsContent = document.getElementById("metricsContent");
-  const metricsTotalEvents = document.getElementById("metricsTotalEvents");
-  const metricsTableBody = document.querySelector("#metricsTable tbody");
+const metricsContent = document.getElementById("metricsContent");
+const metricsTotalEvents = document.getElementById("metricsTotalEvents");
+const metricsTotalAccesses = document.getElementById("metricsTotalAccesses");
+const metricsTotalQueries = document.getElementById("metricsTotalQueries");
+const metricsTableBody = document.querySelector("#metricsTable tbody");
+const metricsTopJournalsTableBody = document.querySelector("#metricsTopJournalsTable tbody");
+const metricsRolesTableBody = document.querySelector("#metricsRolesTable tbody");
+const metricsDepartmentsTableBody = document.querySelector("#metricsDepartmentsTable tbody");
 
-  // ---------------- Metrics: load from Vercel (optional) ----------------
-  if (metricsStatus && metricsContent && metricsTotalEvents && metricsTableBody) {
-    const METRICS_ENDPOINT =
-  window.__OAFINDER_METRICS_ENDPOINT__ ||
-  "https://oafinder-metrics.vercel.app/api/oafinder-metrics";
+if (
+  metricsStatus &&
+  metricsContent &&
+  metricsTotalEvents &&
+  metricsTableBody
+) {
+  const METRICS_ENDPOINT =
+    window.__OAFINDER_METRICS_ENDPOINT__ ||
+    "https://oafinder-metrics.vercel.app/api/oafinder-metrics";
 
-    fetch(METRICS_ENDPOINT, { cache: "no-store" })
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to load metrics");
-        return response.json();
-      })
-      .then((metricsData) => {
-        metricsStatus.textContent = "Metrics loaded.";
-        metricsContent.style.display = "block";
-        metricsTotalEvents.textContent = metricsData.totalEvents || 0;
+  fetch(METRICS_ENDPOINT, { cache: "no-store" })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to load metrics");
+      return response.json();
+    })
+    .then((metricsData) => {
+      metricsStatus.textContent = "Metrics loaded.";
+      metricsContent.style.display = "block";
 
-        const modes = metricsData.modes || {};
-        metricsTableBody.innerHTML = "";
+      // Headline counts
+      metricsTotalEvents.textContent = metricsData.totalEvents || 0;
+      if (metricsTotalAccesses) {
+        metricsTotalAccesses.textContent =
+          (metricsData.usage && metricsData.usage.totalAccesses) || 0;
+      }
+      if (metricsTotalQueries) {
+        metricsTotalQueries.textContent =
+          (metricsData.usage && metricsData.usage.totalQueries) || 0;
+      }
 
-        Object.keys(modes)
-          .sort()
-          .forEach((mode) => {
+      // Feedback by mode
+      const modes = metricsData.modes || {};
+      metricsTableBody.innerHTML = "";
+      Object.keys(modes)
+        .sort()
+        .forEach((mode) => {
+          const m = modes[mode];
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${mode}</td>
+            <td>${m.total}</td>
+            <td>${m.helpfulTrue}</td>
+            <td>${m.helpfulFalse}</td>
+            <td>${m.helpfulNull}</td>
+          `;
+          metricsTableBody.appendChild(row);
+        });
+
+      // Top journals
+      if (metricsTopJournalsTableBody) {
+        const topJournals = metricsData.topJournals || [];
+        metricsTopJournalsTableBody.innerHTML = "";
+        topJournals.forEach((entry) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${entry.title || "(untitled journal)"}</td>
+            <td>${entry.count || 0}</td>
+          `;
+          metricsTopJournalsTableBody.appendChild(row);
+        });
+        if (!topJournals.length) {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td colspan="2">No journal frequency data recorded yet.</td>`;
+          metricsTopJournalsTableBody.appendChild(row);
+        }
+      }
+
+      // Roles
+      if (metricsRolesTableBody && metricsData.userRoles) {
+        metricsRolesTableBody.innerHTML = "";
+        const entries = Object.entries(metricsData.userRoles);
+        entries
+          .sort((a, b) => b[1] - a[1]) // sort by count desc
+          .forEach(([role, count]) => {
             const row = document.createElement("tr");
-            const m = modes[mode];
             row.innerHTML = `
-              <td>${mode}</td>
-              <td>${m.total}</td>
-              <td>${m.helpfulTrue}</td>
-              <td>${m.helpfulFalse}</td>
-              <td>${m.helpfulNull}</td>
+              <td>${role}</td>
+              <td>${count}</td>
             `;
-            metricsTableBody.appendChild(row);
+            metricsRolesTableBody.appendChild(row);
           });
-      })
-      .catch((error) => {
-        console.error("Metrics error:", error);
-        metricsStatus.textContent =
-          "Unable to load metrics. Please try again later.";
-      });
-  }
+        if (!entries.length) {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td colspan="2">No role data collected.</td>`;
+          metricsRolesTableBody.appendChild(row);
+        }
+      }
+
+      // Departments
+      if (metricsDepartmentsTableBody && metricsData.userDepartments) {
+        metricsDepartmentsTableBody.innerHTML = "";
+        const entries = Object.entries(metricsData.userDepartments);
+        entries
+          .sort((a, b) => b[1] - a[1])
+          .forEach(([dept, count]) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${dept}</td>
+              <td>${count}</td>
+            `;
+            metricsDepartmentsTableBody.appendChild(row);
+          });
+        if (!entries.length) {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td colspan="2">No department data collected.</td>`;
+          metricsDepartmentsTableBody.appendChild(row);
+        }
+      }
+    })
+    .catch((error) => {
+      console.error("Metrics error:", error);
+      metricsStatus.textContent =
+        "Unable to load metrics. Please try again later.";
+    });
+}
 
   // ---------------- Helper functions ----------------
 
