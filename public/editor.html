@@ -93,12 +93,17 @@
     <div class="editor-metrics-grid">
       <!-- Left: headline usage stats -->
       <div>
-        <h3 style="margin-top:0;">Usage summary</h3>
-        <p><strong>Total feedback events:</strong> <span id="metricsTotalEvents">0</span></p>
-        <p><strong>Total tool accesses:</strong> <span id="metricsTotalAccesses">0</span></p>
-        <p><strong>Total queries:</strong> <span id="metricsTotalQueries">0</span></p>
-      </div>
-
+  <h3 style="margin-top:0;">Usage summary</h3>
+  <p><strong>Total feedback events:</strong> <span id="metricsTotalEvents">0</span></p>
+  <p><strong>Total tool accesses (all time):</strong> <span id="metricsTotalAccesses">0</span></p>
+  <p><strong>Total queries (all time):</strong> <span id="metricsTotalQueries">0</span></p>
+  <p><strong>Last event:</strong> <span id="metricsLastEvent">–</span></p>
+  <p style="font-size:0.85rem; color:#6b7280;">
+    Last 30 days: <strong><span id="metricsLast30TotalEvents">0</span> events</strong>,
+    <span id="metricsLast30Accesses">0</span> accesses,
+    <span id="metricsLast30Queries">0</span> queries.
+  </p>
+</div>
       <!-- Right: feedback by mode -->
       <div>
         <h3 style="margin-top:0;">Feedback by mode</h3>
