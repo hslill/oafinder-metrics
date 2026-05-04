@@ -87,25 +87,79 @@
 </section>
 
 <section class="editor-panel" id="metricsPanel">
-  <h2>OAFinder Feedback & Usage Metrics</h2>
+  <h2>OAFinder Feedback &amp; Usage Metrics</h2>
   <p class="editor-status" id="metricsStatus">Loading metrics...</p>
   <div id="metricsContent" style="display:none;">
-    <p><strong>Total feedback events:</strong> <span id="metricsTotalEvents">0</span></p>
-    <table class="editor-table" id="metricsTable">
-      <thead>
-        <tr>
-          <th>Mode</th>
-          <th>Total</th>
-          <th>👍 Helpful</th>
-          <th>👎 Not helpful</th>
-          <th>Other/Unknown</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-  </section>
+    <div class="editor-metrics-grid">
+      <!-- Left: headline usage stats -->
+      <div>
+        <h3 style="margin-top:0;">Usage summary</h3>
+        <p><strong>Total feedback events:</strong> <span id="metricsTotalEvents">0</span></p>
+        <p><strong>Total tool accesses:</strong> <span id="metricsTotalAccesses">0</span></p>
+        <p><strong>Total queries:</strong> <span id="metricsTotalQueries">0</span></p>
+      </div>
 
+      <!-- Right: feedback by mode -->
+      <div>
+        <h3 style="margin-top:0;">Feedback by mode</h3>
+        <table class="editor-table" id="metricsTable">
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Total</th>
+              <th>👍 Helpful</th>
+              <th>👎 Not helpful</th>
+              <th>Other/Unknown</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top journals -->
+    <div style="margin-top:14px;">
+      <h3>Frequently searched journals</h3>
+      <table class="editor-table" id="metricsTopJournalsTable">
+        <thead>
+          <tr>
+            <th>Journal</th>
+            <th>Search count</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- User roles / departments (optional) -->
+    <div class="editor-metrics-grid" style="margin-top:14px;">
+      <div>
+        <h3>User roles (if collected)</h3>
+        <table class="editor-table" id="metricsRolesTable">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <h3>User departments (if collected)</h3>
+        <table class="editor-table" id="metricsDepartmentsTable">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Journals listing -->
 <section class="editor-panel">
@@ -237,7 +291,6 @@
 </div>
 <button id="saveDataBtn">Save changes to server</button>
 <span id="saveStatus" style="margin-left:8px; font-size:0.85rem;"></span>
-
 <script src="editor-built.js"></script>
 </body>
 </html>
