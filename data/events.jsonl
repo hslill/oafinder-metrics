@@ -40,3 +40,4 @@
 {"eventType":"journal_selection","mode":"browse","helpful":null,"stateSnapshot":{"subjectIds":["general-medicine"],"benefitType":"full"},"journalTitle":"Administrative Theory & Praxis","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:32:00.681Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:44:42.057Z"}
 {"eventType":"access","mode":"global","helpful":null,"stateSnapshot":{},"journalTitle":"","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:01.126Z"}
+{"eventType":"query","mode":"search","helpful":null,"stateSnapshot":{"subjectId":"","supportType":"","benefitType":""},"journalTitle":"ACS Food Science & Technology","userRole":"","userDepartment":"","timestamp":"2026-05-04T17:45:14.874Z"}
