@@ -1639,6 +1639,11 @@ function runSearch(state, elements) {
     const primaryJournalTitle =
       journalMatches.length ? journalMatches[0].journal_name : "";
 
+      console.log("Query event", {
+    mode: "search",
+    journalTitle: primaryJournalTitle
+  }); // TEMP
+
     sendFeedbackEvent({
       eventType: "query",
       mode: "search",
